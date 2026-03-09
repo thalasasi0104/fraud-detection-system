@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>New User Registration</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+
+<div class="bg"></div>
+
+<main class="wrap">
+<section class="card">
+
+<h1 class="title">New User Registration</h1>
+
+<form class="form" action="/register-user" method="post">
+
+<label>Name</label>
+<input type="text" name="name" required>
+
+<label>Account Number</label>
+<input type="text" name="account" required>
+
+<label>Phone Number</label>
+<input type="text" name="phone" required>
+
+<label>Opening Balance</label>
+<input type="number" name="balance" required>
+
+<button class="btn">Register</button>
+
+</form>
+
+<div class="footer">
+<a class="link" href="/">Back to Login</a>
+</div>
+
+</section>
+</main>
+
+</body>
+</html>

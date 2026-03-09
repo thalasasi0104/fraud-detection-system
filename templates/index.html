@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Bank Secure Login</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <div class="bg"></div>
+
+  <main class="wrap">
+    <section class="card">
+
+      <h1 class="title">Bank Secure Login</h1>
+
+      <!-- 6) Security Message -->
+      <div class="securityBanner">
+        🔒 Protected with OTP Verification • Secure Transaction System
+      </div>
+
+      {% if msg %}
+        <div class="msg">{{ msg }}</div>
+      {% endif %}
+
+      <div class="tabs">
+        <a class="tab {{'active' if tab=='user' else ''}}" href="/?tab=user">User</a>
+        <a class="tab {{'active' if tab=='admin' else ''}}" href="/?tab=admin">Admin</a>
+      </div>
+
+      <!-- USER TAB -->
+      {% if tab == 'user' %}
+      <div class="panel">
+        <h2>User Login</h2>
+
+        <div style="text-align:center;margin-top:10px;">
+  <a class="btnLink outline" href="/register">New User Register</a>
+</div>
+
+        <form id="user_send_form" class="form" action="/user/send-otp" method="post">
+          <label>Account Number</label>
+          <input id="user_account" type="text" name="account" placeholder="Enter account number" required inputmode="numeric">
+
+          <label>Phone Number</label>
+          <input type="text" name="phone" placeholder="Enter phone number" required inputmode="numeric">
+
+          <!-- 5) Forgot help -->
+          <a id="forgot_help" class="helpLink" href="#">Forgot account number?</a>
+
+          <!-- 2) Loading button -->
+          <button id="btn_user_send" class="btn" type="submit">Send OTP</button>
+        </form>
+
+        {% if show_user_otp %}
+        <div class="otpBox">
+          <div class="otpHint">Demo OTP: <b>{{ otp }}</b></div>
+
+          <!-- 3) lock info -->
+          {% if lock_msg %}
+            <div class="warnBox">{{ lock_msg }}</div>
+          {% endif %}
+
+          <form id="user_verify_form" class="form" action="/user/verify-otp" method="post">
+            <label>Enter OTP</label>
+            <input type="text" name="otp" placeholder="6-digit OTP" required inputmode="numeric">
+            <button id="btn_user_verify" class="btn" type="submit">Verify & Continue</button>
+          </form>
+
+          <div class="small">Verify pannuna next page-la dashboard open aagum.</div>
+        </div>
+        {% endif %}
+      </div>
+      {% endif %}
+
+      <!-- ADMIN TAB -->
+      {% if tab == 'admin' %}
+      <div class="panel">
+        <h2>Admin Login</h2>
+
+        <form id="admin_send_form" class="form" action="/admin/send-otp" method="post">
+          <label>Admin ID</label>
+          <input type="text" name="admin_id" placeholder="admin" required>
+
+          <label>Password</label>
+          <div class="pwdRow">
+            <input id="admin_password" type="password" name="password" placeholder="1234" required>
+            <!-- 1) show/hide -->
+            <button type="button" class="eyeBtn" onclick="togglePassword()">👁</button>
+          </div>
+
+          <button id="btn_admin_send" class="btn" type="submit">Send OTP</button>
+        </form>
+
+        {% if show_admin_otp %}
+        <div class="otpBox">
+          <div class="otpHint">Demo OTP: <b>{{ otp }}</b></div>
+
+          {% if lock_msg %}
+            <div class="warnBox">{{ lock_msg }}</div>
+          {% endif %}
+
+          <form id="admin_verify_form" class="form" action="/admin/verify-otp" method="post">
+            <label>Enter OTP</label>
+            <input type="text" name="otp" placeholder="6-digit OTP" required inputmode="numeric">
+            <button id="btn_admin_verify" class="btn" type="submit">Verify & Open Dashboard</button>
+          </form>
+        </div>
+        {% endif %}
+      </div>
+      {% endif %}
+
+      <div class="footer">
+        <a class="link" href="/logout">Logout</a>
+      </div>
+    </section>
+  </main>
+
+  <script src="/static/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>User Dashboard</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <div class="bg"></div>
+
+  <main class="wrap">
+    <section class="card">
+      <h1 class="title">User Dashboard</h1>
+
+      <div class="mini center">
+        Welcome, <b>{{ name }}</b> 👋 <br>
+        Account: <b>{{ masked }}</b> <br>
+        Phone: <b>{{ phone }}</b>
+      </div>
+
+      <div class="uCards">
+        <div class="uCard">
+          <div class="uLabel">Account Balance</div>
+          <div class="uValue">₹{{ balance }}</div>
+          <div class="uSub">Updated after SAFE transactions</div>
+        </div>
+
+        <div class="uCard">
+          <div class="uLabel">Quick Actions</div>
+          <div class="uSub">Start a new payment / transaction</div>
+          <div class="actions">
+            <a class="btnLink" href="/user/amount">New Transaction</a>
+            <a class="btnLink outline" href="/logout">Logout</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="small center">
+        Admin first **Upload Users CSV** pannina apram thaan user login work aagum ✅
+      </div>
+    </section>
+  </main>
+</body>
+</html>

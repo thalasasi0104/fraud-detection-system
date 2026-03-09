@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <div class="bg"></div>
+
+  <main class="wrap">
+    <section class="card wide">
+      <h1 class="title">Admin Dashboard</h1>
+
+      {% if request.args.get("msg") %}
+        <div class="msg">{{ request.args.get("msg") }}</div>
+      {% endif %}
+
+      <!-- KPI CARDS -->
+      <div class="kpis">
+        <div class="kpi">
+          <div class="kpiLabel">Total Tx</div>
+          <div class="kpiValue">{{ kpis.total }}</div>
+        </div>
+        <div class="kpi safe">
+          <div class="kpiLabel">Safe</div>
+          <div class="kpiValue">{{ kpis.safe }}</div>
+        </div>
+        <div class="kpi fraud">
+          <div class="kpiLabel">Fraud</div>
+          <div class="kpiValue">{{ kpis.fraud }}</div>
+        </div>
+        <div class="kpi">
+          <div class="kpiLabel">Fraud Rate</div>
+          <div class="kpiValue">{{ "%.2f"|format(kpis.fraud_rate) }}%</div>
+        </div>
+      </div>
+
+      <h2 style="margin:14px 0 10px;">User Accounts Control</h2>
+
+<div class="tableWrap">
+  <table>
+    <thead>
+      <tr>
+        <th>Account</th>
+        <th>Name</th>
+        <th>Phone</th>
+        <th>Balance</th>
+        <th>Status</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for u in users %}
+      <tr>
+        <td>{{u["account"]}}</td>
+        <td>{{u["name"]}}</td>
+        <td>{{u["phone"]}}</td>
+        <td>₹{{u["balance"]}}</td>
+        <td>
+          {% if u["blocked"] == 1 %}
+            <span class="badge fraud">BLOCKED</span>
+          {% else %}
+            <span class="badge safe">ACTIVE</span>
+          {% endif %}
+        </td>
+        <td>
+          {% if u["blocked"] == 1 %}
+            <form action="/admin/unblock" method="post" style="display:inline;">
+              <input type="hidden" name="account" value="{{u['account']}}">
+              <button class="btn smallBtn" type="submit">Unblock</button>
+            </form>
+          {% else %}
+            <form action="/admin/block" method="post" style="display:inline;">
+              <input type="hidden" name="account" value="{{u['account']}}">
+              <button class="btn smallBtn dangerBtn" type="submit">Block</button>
+            </form>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+
+      {% if users|length == 0 %}
+        <tr><td colspan="6" class="empty">No users uploaded</td></tr>
+      {% endif %}
+    </tbody>
+  </table>
+</div>
+
+      <!-- USERS UPLOAD -->
+      <div class="uploadBox">
+        <div class="uploadTitle">Users Master</div>
+        <div class="small">Uploaded Users: <b>{{ user_count }}</b> (CSV headers: account, phone, name, balance)</div>
+
+        <form class="uploadForm" action="/admin/upload-users" method="post" enctype="multipart/form-data">
+          <input class="fileInput" type="file" name="file" accept=".csv" required>
+          <button class="btn smallBtn" type="submit">Upload Users CSV</button>
+        </form>
+      </div>
+
+      <!-- CONTROLS -->
+      <div class="controls">
+        <form class="searchForm" method="get" action="/admin/dashboard">
+          <input class="searchInput" type="text" name="q" placeholder="Search account / phone / device" value="{{ q }}">
+          <input type="hidden" name="status" value="{{ status }}">
+          <button class="btn smallBtn" type="submit">Search</button>
+        </form>
+
+        <div class="filters">
+          <a class="chip {{ 'active' if status=='ALL' else '' }}" href="/admin/dashboard?status=ALL&q={{ q }}">All</a>
+          <a class="chip {{ 'active' if status=='SAFE' else '' }}" href="/admin/dashboard?status=SAFE&q={{ q }}">SAFE</a>
+          <a class="chip {{ 'active' if status=='FRAUD' else '' }}" href="/admin/dashboard?status=FRAUD&q={{ q }}">FRAUD</a>
+        </div>
+
+        <a class="btn smallBtn outlineBtn" href="/admin/export.csv?status={{ status }}&q={{ q }}">Export CSV</a>
+      </div>
+
+      <!-- TABLE -->
+      <div class="tableWrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Time</th>
+              <th>Account</th>
+              <th>Phone</th>
+              <th>Amount</th>
+              <th>Location</th>
+              <th>Device</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for t in transactions %}
+            <tr>
+              <td>{{t["time"]}}</td>
+              <td>{{t["account"]}}</td>
+              <td>{{t["phone"]}}</td>
+              <td>₹{{t["amount"]}}</td>
+              <td>{{t["location"]}}</td>
+              <td class="device">{{t["device"]}}</td>
+              <td>
+                <span class="badge {{ 'safe' if t['status']=='SAFE' else 'fraud' }}">{{t["status"]}}</span>
+              </td>
+            </tr>
+            {% endfor %}
+
+            {% if transactions|length == 0 %}
+              <tr><td colspan="7" class="empty">No results found</td></tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
+
+      <div class="footer">
+        <a class="link" href="/?tab=admin">Back</a> &nbsp; | &nbsp;
+        <a class="link" href="/logout">Logout</a>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

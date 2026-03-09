@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>User - Transaction</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <div class="bg"></div>
+
+  <main class="wrap">
+    <section class="card">
+      <h1 class="title">Transaction Verification</h1>
+
+      <div class="mini center">
+        Welcome, <b>{{ name }}</b> <br>
+        Balance: <b>₹{{ balance }}</b>
+      </div>
+
+      {% if msg %}
+        <div class="msg">{{ msg }}</div>
+      {% endif %}
+
+      <form class="form" action="/user/amount" method="post">
+        <label>Enter Amount</label>
+        <input type="number" name="amount" placeholder="e.g. 1000" required min="1">
+        <button class="btn" type="submit">Check Transaction</button>
+      </form>
+
+      {% if result %}
+        <div class="result {{ 'safe' if result=='SAFE' else 'fraud' }}">
+          {{ result }} TRANSACTION
+          {% if amount %}<div class="small">Amount: ₹{{ amount }}</div>{% endif %}
+          <div class="small">Current Balance: ₹{{ balance }}</div>
+        </div>
+      {% endif %}
+
+      <div class="footer">
+        <a class="link" href="/user/dashboard">Back to Dashboard</a>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
